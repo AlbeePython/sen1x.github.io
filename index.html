@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sen1x Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Фоновое изображение */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('backstage.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        /* Шапка */
+        header {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #333;
+            backdrop-filter: blur(10px);
+        }
+
+        .title-main {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .title-sub {
+            font-size: 1.2rem;
+            color: #ccc;
+            letter-spacing: 3px;
+        }
+
+        /* Навигация */
+        nav {
+            background-color: rgba(20, 20, 20, 0.9);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            border-bottom: 1px solid #333;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background-color: #333;
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background-color: #444;
+            color: #4dabf7;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: #4dabf7;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        /* Контент */
+        .content {
+            display: none;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Главная страница */
+        #main {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .welcome {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+        }
+
+        .description {
+            font-size: 1.5rem;
+            color: #ccc;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Раздел Информация */
+        .info-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+            min-height: 70vh;
+        }
+
+        .info-text {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+        }
+
+        .info-title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .info-subtitle {
+            font-size: 1.5rem;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .photo-container {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .photo-frame {
+            width: 100%;
+            max-width: 640px; /* 16:9 при высоте 360px */
+            aspect-ratio: 16 / 9; /* Соотношение 16:9 */
+            perspective: 1000px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .photo {
+            width: 100%;
+            height: 100%;
+            background-image: url('photo1.png');
+            background-size: cover;
+            background-position: center;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform;
+        }
+
+        .photo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Эффект наклона фото */
+        .photo-tilt {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* GitHub страница */
+        #github-page {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .github-icon {
+            font-size: 5rem;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+
+        .github-text {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #ccc;
+        }
+
+        .github-link {
+            display: inline-block;
+            padding: 15px 40px;
+            background-color: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            border: 2px solid #444;
+        }
+
+        .github-link:hover {
+            background-color: #444;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Модальное окно для перенаправления */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #222;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid #333;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .modal-text {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #ccc;
+        }
+
+        .countdown {
+            font-size: 3rem;
+            color: #4dabf7;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .cancel-btn {
+            padding: 10px 30px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn:hover {
+            background-color: #444;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1024px) {
+            .info-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .info-text {
+                max-width: 100%;
+            }
+            
+            .photo-frame {
+                max-width: 560px; /* 16:9 при высоте 315px */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title-main {
+                font-size: 2rem;
+            }
+            
+            .welcome {
+                font-size: 2.5rem;
+            }
+            
+            nav {
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+            
+            .nav-link {
+                padding: 8px 15px;
+                font-size: 1rem;
+            }
+            
+            .info-title {
+                font-size: 2.5rem;
+            }
+            
+            .info-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .photo-frame {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .info-container {
+                padding: 20px 0;
+            }
+            
+            .info-title {
+                font-size: 2rem;
+            }
+            
+            .photo-frame {
+                border-radius: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <header>
+        <div class="title-main">SEN1X PROJECTS</div>
+        <div class="title-sub">ON GITHUB</div>
+    </header>
+
+    <!-- Навигация -->
+    <nav>
+        <a href="#" class="nav-link active" data-target="main">Главная</a>
+        <a href="#" class="nav-link" data-target="info">Информация</a>
+        <a href="#" class="nav-link" data-target="github-page">GitHub</a>
+    </nav>
+
+    <!-- Основной контент -->
+    <main>
+        <!-- Главная страница -->
+        <section id="main" class="content active">
+            <div class="welcome">Добро пожаловать!</div>
+            <div class="description">
+                Это официальный сайт разработчика репозиториев на GitHub. 
+                Здесь вы найдёте информацию о проектах, их описания и ссылки на исходный код.
+                Исследуйте разделы сайта, чтобы узнать больше.
+            </div>
+        </section>
+
+        <!-- Раздел Информация -->
+        <section id="info" class="content">
+            <div class="info-container">
+                <div class="info-text">
+                    <div class="info-title">ГДЕ Я?</div>
+                    <div class="info-subtitle">
+                        Вы находитесь на сайте разработчика репозиториев на GitHub. 
+                        Здесь вы можете увидеть все проекты и информацию о создателе. 
+                        Исследуйте различные разделы, чтобы узнать больше о работе и проектах.
+                    </div>
+                </div>
+                <div class="photo-container">
+                    <div class="photo-frame">
+                        <div class="photo" id="interactive-photo">
+                            <!-- Эффект наклона будет добавлен через JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Раздел GitHub -->
+        <section id="github-page" class="content">
+            <div class="github-icon">💻</div>
+            <div class="github-text">Перейти на GitHub профиль</div>
+            <a href="#" class="github-link" id="github-redirect">Открыть GitHub</a>
+        </section>
+    </main>
+
+    <!-- Модальное окно для перенаправления -->
+    <div class="modal-overlay" id="redirect-modal">
+        <div class="modal-content">
+            <div class="modal-title">Внимание!</div>
+            <div class="modal-text">Через 5 секунд вас перекинет в GitHub</div>
+            <div class="countdown" id="countdown">5</div>
+            <button class="cancel-btn" id="cancel-redirect">Отмена</button>
+        </div>
+    </div>
+
+    <script>
+        // Навигация по разделам
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Удаляем активный класс у всех ссылок
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                
+                // Добавляем активный класс текущей ссылке
+                this.classList.add('active');
+                
+                // Скрываем все разделы
+                document.querySelectorAll('.content').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Показываем выбранный раздел
+                const target = this.getAttribute('data-target');
+                document.getElementById(target).classList.add('active');
+            });
+        });
+
+        // Интерактивное фото в формате 16:9 с эффектом наклона
+        const photo = document.getElementById('interactive-photo');
+        let isHovering = false;
+        
+        photo.addEventListener('mousemove', function(e) {
+            isHovering = true;
+            
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Вычисляем относительные координаты (от -1 до 1)
+            const xRelative = (x / rect.width) * 2 - 1;
+            const yRelative = (y / rect.height) * 2 - 1;
+            
+            // Усиливаем эффект в зависимости от близости к краям
+            const intensity = 15; // Максимальный угол наклона в градусах
+            
+            // Вычисляем угол наклона с учетом плавного перехода к краям
+            const rotateY = -xRelative * intensity;
+            const rotateX = yRelative * intensity;
+            
+            // Добавляем небольшой эффект параллакса для фона
+            const moveX = xRelative * 20;
+            const moveY = yRelative * 20;
+            
+            // Применяем трансформации
+            this.style.transform = `
+                perspective(1000px) 
+                rotateX(${rotateX}deg) 
+                rotateY(${rotateY}deg)
+                translateX(${moveX}px)
+                translateY(${moveY}px)
+                scale(1.05)
+            `;
+            
+            // Смещаем background-position для эффекта параллакса
+            const bgX = 50 + moveX * 0.5;
+            const bgY = 50 + moveY * 0.5;
+            this.style.backgroundPosition = `${bgX}% ${bgY}%`;
+        });
+        
+        photo.addEventListener('mouseleave', function() {
+            isHovering = false;
+            
+            // Плавно возвращаем фото в исходное состояние
+            this.style.transition = 'transform 0.5s ease, background-position 0.5s ease';
+            this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+            this.style.backgroundPosition = 'center';
+            
+            // Убираем transition после завершения анимации
+            setTimeout(() => {
+                if (!isHovering) {
+                    this.style.transition = '';
+                }
+            }, 500);
+        });
+        
+        // Добавляем CSS для плавности при возвращении
+        photo.style.transition = 'transform 0.1s ease-out, background-position 0.1s ease-out';
+
+        // Перенаправление на GitHub
+        const githubLink = document.getElementById('github-redirect');
+        const modal = document.getElementById('redirect-modal');
+        const countdownElement = document.getElementById('countdown');
+        const cancelBtn = document.getElementById('cancel-redirect');
+        
+        let countdown;
+        let secondsLeft = 5;
+        
+        githubLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            secondsLeft = 5;
+            countdownElement.textContent = secondsLeft;
+            modal.style.display = 'flex';
+            
+            countdown = setInterval(() => {
+                secondsLeft--;
+                countdownElement.textContent = secondsLeft;
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(countdown);
+                    window.location.href = 'https://github.com/AlbeePython';
+                }
+            }, 1000);
+        });
+        
+        cancelBtn.addEventListener('click', function() {
+            clearInterval(countdown);
+            modal.style.display = 'none';
+        });
+        
+        // Закрытие модального окна при клике на фон
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                clearInterval(countdown);
+                modal.style.display = 'none';
+            }
+        });
+
+        // Проверка наличия изображений и подстановка заглушек при необходимости
+        window.addEventListener('load', function() {
+            const images = ['backstage.png', 'photo1.png'];
+            images.forEach(img => {
+                const testImage = new Image();
+                testImage.onerror = function() {
+                    console.warn(`Изображение ${img} не найдено. Будет использована заглушка.`);
+                    
+                    if (img === 'backstage.png') {
+                        document.body.style.backgroundImage = 'linear-gradient(45deg, #000 25%, #222 25%, #222 50%, #000 50%, #000 75%, #222 75%, #222 100%)';
+                        document.body.style.backgroundSize = '100px 100px';
+                    }
+                    
+                    if (img === 'photo1.png') {
+                        const photoElement = document.getElementById('interactive-photo');
+                        photoElement.style.backgroundImage = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                        photoElement.style.display = 'flex';
+                        photoElement.style.justifyContent = 'center';
+                        photoElement.style.alignItems = 'center';
+                        photoElement.innerHTML = `
+                            <div style="text-align: center; padding: 20px;">
+                                <div style="font-size: 1.8rem; color: #fff; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                                    Изображение не найдено
+                                </div>
+                                <div style="font-size: 1rem; color: rgba(255,255,255,0.8);">
+                                    Поместите файл photo1.png<br>в папку с сайтом
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Отключаем эффекты наклона для заглушки
+                        photoElement.removeEventListener('mousemove', () => {});
+                        photoElement.removeEventListener('mouseleave', () => {});
+                    }
+                };
+                testImage.src = img;
+            });
+            
+            // Добавляем красивую тень при наведении для всех фото
+            const allPhotos = document.querySelectorAll('.photo');
+            allPhotos.forEach(p => {
+                p.addEventListener('mouseenter', () => {
+                    p.style.boxShadow = '0 20px 50px rgba(0, 0, 0, 0.8)';
+                });
+                
+                p.addEventListener('mouseleave', () => {
+                    p.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.5)';
+                });
+            });
+        });
+        
+        // Плавная инициализация фото
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                photo.style.opacity = '1';
+                photo.style.transition = 'opacity 0.5s ease';
+            }, 300);
+        });
+    </script>
+</body>
+</html>
